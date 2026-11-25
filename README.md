@@ -20,13 +20,43 @@ Three loadable skills for code quality, security, and documentation across Pytho
 
 On older versions, run `/plugin marketplace add sumal-sportingrisk/StopSlop`, then `/plugin install slopstop@stopslop`. The skills are then available in every project as `/slopstop:slopstop-python-r`, `/slopstop:slopstop-security`, and `/slopstop:slopstop-docs`, and Claude also loads them when a task matches their descriptions. Auto-update is off by default for third-party marketplaces: turn it on under **Marketplaces** in `/plugin`, or run `/plugin marketplace update stopslop` to pull changes.
 
-**Codex and other agents:**
+The plugin command is the same on Windows, macOS, and Ubuntu because it runs inside Claude Code.
+
+**Codex and other agents:** the [skills CLI](https://github.com/vercel-labs/skills) installs from this repository. It needs Node.js, which provides `npx`. Install a current LTS release if `node --version` fails:
+
+| OS | Install Node.js |
+| --- | --- |
+| Windows | `winget install OpenJS.NodeJS.LTS`, or the installer from [nodejs.org](https://nodejs.org/) |
+| macOS | `brew install node`, or the installer from [nodejs.org](https://nodejs.org/) |
+| Ubuntu | [nvm](https://github.com/nvm-sh/nvm) or [NodeSource](https://github.com/nodesource/distributions); the `nodejs` package in older Ubuntu releases may be too old |
+
+Then run this once, in PowerShell on Windows or a terminal on macOS and Ubuntu:
 
 ```sh
-npx skills add sumal-sportingrisk/StopSlop
+npx skills add sumal-sportingrisk/StopSlop -g -a codex -y
 ```
 
-Or copy the folders under `skills/` into the agent's skill directory (`.agents/skills/` for Codex). Do not copy `evals/`. In Codex, invoke `$slopstop-python-r`, `$slopstop-security`, or `$slopstop-docs`; `agents/openai.yaml` supplies optional Codex UI metadata.
+`-g` installs for your user so the skills apply in every project, `-a codex` targets Codex (repeat `-a` for more agents), and `-y` skips the prompts. Without these flags the CLI asks which skills, agents, and scope to use, and installs into the current project only. This command has not yet been tested against this repository.
+
+Without Node.js, clone the repository and copy the skill folders into a project's `.agents/skills/` directory. Do not copy `evals/`.
+
+macOS and Ubuntu:
+
+```sh
+git clone https://github.com/sumal-sportingrisk/StopSlop.git
+mkdir -p your-project/.agents/skills
+cp -R StopSlop/skills/* your-project/.agents/skills/
+```
+
+Windows (PowerShell):
+
+```powershell
+git clone https://github.com/sumal-sportingrisk/StopSlop.git
+New-Item -ItemType Directory -Force your-project\.agents\skills | Out-Null
+Copy-Item -Recurse StopSlop\skills\* your-project\.agents\skills\
+```
+
+Run `git pull` in `StopSlop` and copy again to update. In Codex, invoke `$slopstop-python-r`, `$slopstop-security`, or `$slopstop-docs`; `agents/openai.yaml` supplies optional Codex UI metadata.
 
 ## Use
 
