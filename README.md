@@ -46,21 +46,21 @@ Updates are not automatic. Either:
 
 ## Install in Codex or other agents
 
-1. Update Codex to the latest version, using the same method you installed it with. For an npm install:
-
-   ```sh
-   npm install -g @openai/codex@latest
-   ```
-
-   Older Codex versions may not load skills.
-
-2. You need Node.js. Check with `node --version`. If it is missing, install the current LTS release:
+1. You need Node.js. Check with `node --version`. If it is missing, install the current LTS release:
 
    | OS | Command |
    | --- | --- |
    | Windows | `winget install OpenJS.NodeJS.LTS` |
    | macOS | `brew install node` |
    | Ubuntu | Use [nvm](https://github.com/nvm-sh/nvm). The `nodejs` package in older Ubuntu releases may be too old. |
+
+2. Update Codex to the latest version, using the same method you installed it with. For an npm install:
+
+   ```sh
+   npm install -g @openai/codex@latest
+   ```
+
+   Older Codex versions may not load skills.
 
 3. Run this once, in PowerShell on Windows or a terminal on macOS and Ubuntu:
 
