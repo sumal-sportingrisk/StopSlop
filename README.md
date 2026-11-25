@@ -14,28 +14,30 @@ Skills that stop AI coding agents from producing slop: bloated code, weakened te
 
 Each person does this once. It then works in every project, and the steps are the same on Windows, macOS, and Ubuntu.
 
-1. Update Claude Code. In a terminal, run:
+Run these in a terminal (PowerShell on Windows):
 
-   ```sh
-   claude update
-   ```
+```sh
+claude update
+claude plugin marketplace add sumal-sportingrisk/StopSlop
+claude plugin install slopstop@stopslop
+```
 
-   Then run `claude --version`. You need 2.1.275 or later.
+The first command updates Claude Code, the second adds this repository as a plugin source, and the third installs the skills for your user so they work in every project. Check it worked with `claude plugin list`, which should show `slopstop@stopslop`.
 
-2. Start Claude Code and type:
+Then start a new Claude Code session. Skills load when a session starts.
 
-   ```text
-   /plugin install slopstop --marketplace sumal-sportingrisk/StopSlop
-   ```
+<details>
+<summary>Install from inside Claude Code instead</summary>
 
-3. Type `/plugin` and check that `slopstop` is listed as installed.
-
-If you can't update past 2.1.275, use these two commands instead of step 2:
+In Claude Code 2.1.275 or later, type:
 
 ```text
-/plugin marketplace add sumal-sportingrisk/StopSlop
-/plugin install slopstop@stopslop
+/plugin install slopstop --marketplace sumal-sportingrisk/StopSlop
 ```
+
+Type only that line. Claude Code then asks you to confirm adding the marketplace and choose where to install: accept, and choose **User**. If the screen closes without confirming, nothing is installed; use the terminal commands above.
+
+</details>
 
 ### Get updates
 
