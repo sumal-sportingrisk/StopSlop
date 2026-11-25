@@ -4,7 +4,9 @@ This directory is for the evaluator, not the agent under evaluation. Do not inst
 
 ## Cases and preparation
 
-Eight cases under `cases/` each contain a user prompt, a concrete `fixture/`, and private `grading.json` criteria. Prompts are deliberately phrased the way a colleague would ask, without restating the behavior being graded; contracts the agent must respect live in the fixture's code and docs. Do not add hints to a prompt to make a case pass, because the baseline gets the same hints. [The case index and backlog](scenarios.md) lists current coverage and future fixture candidates; it contains no completed results.
+Fifteen cases under `cases/` each contain a user prompt, a concrete `fixture/`, and private `grading.json` criteria: seven code/testing cases, five security cases, and three documentation cases. Prompts are deliberately phrased the way a colleague would ask, without restating the behavior being graded; contracts the agent must respect live in the fixture's code and docs. Do not add hints to a prompt to make a case pass, because the baseline gets the same hints. [The case index and backlog](scenarios.md) lists coverage and future fixture candidates.
+
+Cases can declare the skill under test in `skills.json`, outside the agent workspace. Code cases default to `slopstop-python-r`; security and documentation cases select their respective standalone skill. The preparer copies only those skill packages, not the selection file or grading key.
 
 From this repository's root, prepare a fresh run outside the repository:
 
@@ -15,7 +17,7 @@ python3 evals/prepare.py scoped-fix --condition skill --output /tmp/slopstop-sco
 
 The preparer refuses to overwrite an existing output or write inside this repository. It produces:
 
-- `workspace/`: fixture files and, for the skill conditions, `.agents/skills/slopstop-python-r/`.
+- `workspace/`: fixture files and, for the skill conditions, the selected packages under `.agents/skills/`.
 - `task.txt`: the user prompt. The `skill` condition prefixes an instruction to read the skill; `skill-implicit` installs the skill without that instruction, to test whether it triggers on its own.
 - `baseline.json`: original workspace file hashes for evaluator comparison, including the skill condition's installed instructions.
 
@@ -25,7 +27,9 @@ The preparer launches no agent and performs no grading. For Claude Code runs, us
 
 Launch each run in a fresh session with only `workspace/` mounted or otherwise accessible as its filesystem workspace. Send `task.txt` as the task; do not expose the task file's parent directory, this source checkout, the grading keys, supplemental scenarios, or results from other runs. Merely setting the current directory is insufficient if tools can still read the source checkout. Disable unrelated skills, persistent memory, and network access unless a case explicitly needs them. Do not score a run as independent if those conditions cannot be established.
 
-Use the same model, runtime versions, tools, permissions, and token/time limits for both conditions. Alternate or randomize condition order. Start with a pilot: `scoped-fix`, `test-integrity`, `keep-simple`, and `security-review` × `baseline`/`skill` × two runs = 16 runs. If the pilot shows no difference between conditions, revise the cases before scaling up. A full round is eight cases × three conditions × three runs = 72 runs. This is a proposed experiment, not an automatically authorized execution. Record any environment limitations and contamination rather than interpreting them as a skill effect.
+Use the same model, runtime versions, tools, permissions, and token/time limits for both conditions. Alternate or randomize condition order. The authorized pilot is `scoped-fix`, `test-integrity`, `keep-simple`, and `security-review` × `baseline`/`skill` × two runs = 16 runs. It was run with in-session subagents that were not OS-sandboxed; see [the results](results/2026-11-25-pilot.md). A separate sandboxed CLI attempt was blocked before inference; see [the preflight record](results/pilot-preflight.json).
+
+Record the source commit and installed skill file hashes for each actual run. The skill split and new fixtures must be identified as a different version from the preflight source. Report null results honestly. If later cases are revised to address ambiguity or ceiling effects, keep the earlier results and version the changed cases rather than replacing inconvenient evidence. A full round across all 15 cases, three conditions, and three repeats would be 135 runs; those additional runs have not been authorized or executed.
 
 Capture prompts, transcripts, tool commands and outputs, final responses, file changes, runtime versions, and budgets outside the agent workspace. Keep initial fixture files untouched. Account for generated caches separately when comparing content changes.
 

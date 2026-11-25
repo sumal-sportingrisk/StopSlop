@@ -1,6 +1,6 @@
 ---
 name: slopstop-python-r
-description: Prevent and review AI-generated code bloat in Python and R. Apply when writing, refactoring, or reviewing Python modules, R scripts or packages, notebooks, and data pipelines for clean code, explicit data semantics, and meaningful verification. Also use for requests to remove AI slop from Python or R code, and for security reviews of Python or R code that touches SQL Server, MongoDB, AWS, credentials, or access control.
+description: Prevent and review AI-generated code bloat in Python and R. Apply when writing, refactoring, or reviewing Python modules, R scripts or packages, notebooks, and data pipelines for clean code, explicit data semantics, and meaningful verification. Also use for requests to remove AI slop from Python or R code. Dedicated security audits and documentation authoring have separate skills.
 ---
 
 # SlopStop for Python and R
@@ -24,7 +24,7 @@ For unused-code reviews or removal, read [the dead-code workflow](references/dea
 
 For test-quality reviews or substantive changes to tests, read [the testing reference](references/testing.md). Apply it to Python and R using the project's existing test framework.
 
-Read [the security reference](references/security.md) for an explicitly requested security review or when changed code crosses a trust boundary, handles credentials, or enforces access. Keep a routine cleanup within scope; report material security issues outside it separately.
+Preserve security protections in touched code. Report material security issues outside the requested fix separately; do not turn a routine cleanup into an unrequested audit.
 
 ## Shared rules
 

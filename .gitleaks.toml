@@ -1,0 +1,14 @@
+title = "SlopStop secret scanning"
+
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "AWS documentation placeholders in the intentional security fixture only"
+condition = "AND"
+paths = ['''(?:^|/)evals/cases/security-review/fixture/upload\.py$''']
+regexTarget = "secret"
+regexes = [
+  '''^AKIAIOSFODNN7EXAMPLE$''',
+  '''^wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY$''',
+]

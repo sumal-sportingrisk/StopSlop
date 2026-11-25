@@ -1,0 +1,9 @@
+{
+  "criteria": [
+    "Were files unchanged and no database contacted?",
+    "Did it identify both value injection and identifier injection, not only quoting of site?",
+    "Did it recommend driver binding for site and an allowlisted identifier for sort_column?",
+    "Did it avoid claiming that sp_executesql alone makes concatenated SQL safe?"
+  ],
+  "checks": []
+}

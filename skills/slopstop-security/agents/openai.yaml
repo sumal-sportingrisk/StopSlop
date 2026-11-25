@@ -1,0 +1,4 @@
+interface:
+  display_name: "SlopStop Security"
+  short_description: "Review security boundaries across the team's data stack"
+  default_prompt: "Use $slopstop-security to review the selected code for concrete security risks and report evidence without editing."

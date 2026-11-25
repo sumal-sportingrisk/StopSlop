@@ -1,38 +1,48 @@
 # SlopStop
 
-A loadable skill for writing, cleaning up, and reviewing Python and R code. It targets unnecessary complexity, misleading comments, hidden failures, unsafe dead-code removal, and weak verification while preserving project conventions and public behavior.
+Three loadable skills for code quality, security, and documentation across Python, R, MongoDB, SQL Server, and AWS. They guide agent decisions while preserving project conventions and public behavior. Mechanical checks are configured separately in CI and optional local hooks.
+
+| Skill | Use it for |
+| --- | --- |
+| [slopstop-python-r](skills/slopstop-python-r/SKILL.md) | Writing and cleaning up Python/R code, reviewing complexity, dead code, and tests |
+| [slopstop-security](skills/slopstop-security/SKILL.md) | Trust boundaries, credentials, SQL/Mongo queries, IAM, and access-control reviews |
+| [slopstop-docs](skills/slopstop-docs/SKILL.md) | Accurate README files, how-to guides, reference pages, runbooks, and checked examples |
 
 ## Install and use
 
-Copy the entire [`skills/slopstop-python-r`](skills/slopstop-python-r/SKILL.md) folder, including its references, into your agent's project skill directory. The examples below assume a sibling project named `your-project`; adjust the destination to your actual project. Run only the block for your agent, from this repository's root. Before copying, check that the destination does not already contain `slopstop-python-r`; review an existing copy rather than merging or overwriting it blindly.
+Copy the desired skill folders, including their supporting files, into your agent's project skill directory. The examples below install all three into a sibling project named `your-project`; adjust the destination to your actual project. Run only the block for your agent, from this repository's root. Check existing skill folders before copying; review an existing copy rather than merging or overwriting it blindly. Do not copy `evals/` into the skill directory.
 
 ```sh
 # Codex
 mkdir -p ../your-project/.agents/skills
-cp -R skills/slopstop-python-r ../your-project/.agents/skills/
+cp -R skills/slopstop-python-r skills/slopstop-security skills/slopstop-docs ../your-project/.agents/skills/
 
 # Claude Code
 mkdir -p ../your-project/.claude/skills
-cp -R skills/slopstop-python-r ../your-project/.claude/skills/
+cp -R skills/slopstop-python-r skills/slopstop-security skills/slopstop-docs ../your-project/.claude/skills/
 ```
 
 These locations follow the [Codex skill documentation](https://learn.chatgpt.com/docs/build-skills) and [Claude Code skill documentation](https://code.claude.com/docs/en/skills). Other agents may use different directories. `agents/openai.yaml` supplies optional Codex UI metadata; the skill itself is plain Markdown with YAML frontmatter.
 
-In Codex, explicitly invoke `$slopstop-python-r`. In Claude Code, invoke `/slopstop-python-r` or ask to use the skill by name; see the [Claude Code skill documentation](https://code.claude.com/docs/en/skills). For example:
+In Codex, explicitly invoke `$slopstop-python-r`, `$slopstop-security`, or `$slopstop-docs`. In Claude Code, use the corresponding slash command or ask to use the skill by name; see the [Claude Code skill documentation](https://code.claude.com/docs/en/skills). For example:
 
 ```text
 Use slopstop-python-r to simplify the selected functions without changing behavior.
 ```
 
 ```text
-Use slopstop-python-r to review this R package. Report findings without editing.
+Use slopstop-security to review the selected SQL and MongoDB access code without editing.
 ```
 
-You can also ask an agent to read `skills/slopstop-python-r/SKILL.md` directly. Discovery depends on the host agent. This is an instruction package, not a static analyzer or a guarantee of correctness.
+```text
+Use slopstop-docs to update this README against the actual setup commands and code.
+```
+
+You can also ask an agent to read a skill's `SKILL.md` directly. Discovery depends on the host agent and remains unverified for these packages. Instructions and passing static checks do not guarantee correctness.
 
 ## Scope and structure
 
-The broad trigger is intentional: the original scope includes writing Python and R code as well as cleanup and review. The entry point loads the relevant language reference; testing, dead-code, and security references are conditional. Evaluation should determine whether that context cost is justified.
+The Python/R skill deliberately covers writing as well as cleanup and review; it loads language-specific references and conditionally loads testing or dead-code guidance. Dedicated security and documentation tasks have separate entry points. Each skill is independently installable. [AGENTS.md](AGENTS.md) and [CLAUDE.md](CLAUDE.md) route repository work to the relevant package; installing the packages elsewhere does not install those routing files.
 
 - Cleanup preserves behavior within the requested scope; a focused fix leaves unrelated code alone.
 - Reviews are read-only unless edits were requested. Comment-only work preserves executable behavior and directives.
@@ -50,18 +60,48 @@ Current validation status:
 
 | Area | Status |
 | --- | --- |
-| Skill metadata, local links, Python/R examples | Checked locally; these checks do not evaluate agent behavior |
-| Evaluation preparer and fixture starting states | Five harness tests pass, including copying, overwrite refusal, and initial test outcomes |
-| Paired agent evaluation | Not run; the proposed pilot is four cases × two conditions × two repeats = 16 runs |
+| Three skill packages and local links | Checked locally; four package-check tests pass |
+| Secret-scan control protocol | Three unit tests pass with simulated scanner responses; this does not verify real Gitleaks detection |
+| Evaluation preparer and fixture starting states | Five harness tests pass across 15 fixture cases and three loading conditions |
+| R reference examples | Executed locally with missingness and dimension checks |
+| Ruff, Bandit, lintr, and Gitleaks | Configured, not executed locally; tools are unavailable and package installation failed |
+| Paired agent evaluation | 16-run pilot completed with in-session subagents, not OS-sandboxed: no correctness difference between conditions (ceiling effect); skill runs redacted secrets and reported check status more reliably. A sandboxed CLI run is still blocked |
 | Automatic skill loading | Not verified; `skill-implicit` is implemented in the preparer but has not been run in an agent |
 
-The 16-run pilot compares the baseline with explicit skill loading; it does not test automatic discovery. No improvement in agent behavior is claimed yet. To run the harness checks without launching agents:
+The 16-run pilot compared four cases with baseline/explicit skill loading, twice each, using Claude Opus 5.5 subagents inside a Claude Code session. [The pilot results](evals/results/2026-11-25-pilot.md) found no correctness difference: all runs passed in both conditions. The skill changed reporting: secrets were redacted and checks were labeled PASS/NOT RUN, but security findings were all rated High (since addressed with a severity scale). Those subagents were instructed, not sandboxed, to stay in their workspaces, and the pilot predates the skill split. A separate [CLI preflight](evals/results/pilot-preflight.json) for a sandboxed run was blocked before inference. Automatic discovery is untested. To run the harness checks without launching agents:
 
 ```sh
 python3 -B -m unittest discover -s evals -p 'test_prepare.py' -v
 ```
 
-Python 3 and Rscript are required for those checks. The repository provides no automatic CI, pre-commit enforcement, or Claude Code hooks; loading the skill does not install those controls. A separate documentation skill is not included.
+Python 3 and Rscript are required for those checks. Documentation and security fixtures are synthetic review tasks, not reconstructions of real team incidents or completed evaluations. A data-correctness skill remains a later option.
+
+## Checks and enforcement
+
+[GitHub Actions](.github/workflows/checks.yml) is configured to run package/link checks, unit tests, fixture starting-state checks, R examples, Ruff, Bandit, lintr, and Gitleaks history/current-file scans. It uses read-only repository permissions and pinned action commits; the Gitleaks download is pinned and checksum-verified. The workflow has not been run remotely. Push the changes and configure required status checks in repository settings to make passing CI a merge requirement.
+
+Install development tools in your Python environment, then run checks from the repository root:
+
+```sh
+python3 -m pip install -r requirements-dev.txt
+python3 scripts/check_packages.py
+python3 -B -m unittest discover -s tests -v
+python3 -B -m unittest discover -s evals -p 'test_prepare.py' -v
+Rscript --vanilla tests/check_r_examples.R
+python3 -m ruff check scripts evals/prepare.py evals/test_prepare.py tests
+python3 -m bandit -c pyproject.toml -r scripts evals/prepare.py
+```
+
+CI uses Python 3.12 and R 4.5.2. It also checks that the documented credential placeholders are allowed while a non-exempt synthetic token in the same fixture is detected. That real-scanner control has not been run locally. For the R linter, install lintr in your development R environment and run:
+
+```sh
+Rscript --vanilla -e 'install.packages("lintr", repos = "https://cloud.r-project.org")'
+Rscript --vanilla -e 'findings <- lintr::lint_dir("tests"); print(findings); if (length(findings)) quit(status = 1L)'
+```
+
+[The optional pre-commit configuration](.pre-commit-config.yaml) uses system-installed tools. Install the Python development dependencies, the pre-commit framework, lintr, and Gitleaks 8.30.1 before enabling it with `pre-commit install`. Hook installation changes the current repository's Git configuration and has not been performed here. Local hooks can be bypassed; CI is the shared enforcement point once its checks are required.
+
+Intentional evaluation fixtures are excluded from style/security linting so their seeded defects remain available to evaluate agents. Secret scanning still covers them. [The Gitleaks exception](.gitleaks.toml) requires both the exact fixture path and one of AWS's documented placeholder values; it does not exclude the fixture file or evaluation directory wholesale. There are no Claude Code hooks or live-account scanners configured.
 
 ## References consulted
 
@@ -77,3 +117,8 @@ These sources informed independently written guidance. They are optional human r
 - Official Python documentation: [default arguments](https://docs.python.org/3/tutorial/controlflow.html#default-argument-values), [closure binding](https://docs.python.org/3/faq/programming.html#why-do-lambdas-defined-in-a-loop-with-different-values-all-return-the-same-result), and [pickle trust requirements](https://docs.python.org/3/library/pickle.html).
 - Official R documentation: [logical operators](https://stat.ethz.ch/R-manual/R-devel/library/base/html/Logic.html), [sequences](https://stat.ethz.ch/R-manual/R-devel/library/base/html/seq.html), [conditional selection](https://stat.ethz.ch/R-manual/R-devel/library/base/html/ifelse.html), [near equality](https://stat.ethz.ch/R-manual/R-devel/library/base/html/all.equal.html), and [system2 argument quoting](https://stat.ethz.ch/R-manual/R-devel/library/base/html/system2.html).
 - pandas documentation: [copy-on-write and assignment](https://pandas.pydata.org/docs/user_guide/copy_on_write.html).
+- Documentation: [Diátaxis](https://diataxis.fr/), Anthropic's [doc-coauthoring](https://github.com/anthropics/skills/blob/main/skills/doc-coauthoring/SKILL.md), and AWS's [document-service](https://github.com/awslabs/agent-plugins/blob/main/plugins/codebase-documentor-for-aws/skills/document-service/SKILL.md): distinct reader tasks, source-grounded explanations, and reader testing.
+- Security review: Trail of Bits' [differential-review](https://github.com/trailofbits/skills/blob/main/plugins/differential-review/skills/differential-review/SKILL.md) and [sharp-edges](https://github.com/trailofbits/skills/blob/main/plugins/sharp-edges/skills/sharp-edges/SKILL.md): removed controls, affected callers, and misuse-resistant interfaces. The new instructions express these ideas independently; upstream text and required workflows were not copied.
+- Verification: [verification-before-completion](https://github.com/obra/superpowers/blob/main/skills/verification-before-completion/SKILL.md): inspect evidence and diffs before making completion claims, adapted to proportional checks and explicit NOT RUN reporting.
+
+Specialist companion candidates are the official [MongoDB skills](https://github.com/mongodb/agent-skills), [AWS SDK Python](https://github.com/aws/agent-toolkit-for-aws/blob/main/skills/core-skills/aws-sdk-python-usage/SKILL.md) and [IAM](https://github.com/aws/agent-toolkit-for-aws/blob/main/skills/core-skills/aws-iam/SKILL.md) skills, and Microsoft's [T-SQL correctness](https://github.com/microsoft/microsoft-sql/blob/main/plugins/microsoft-sql/skills/t-sql-correctness/SKILL.md) and [injection prevention](https://github.com/microsoft/microsoft-sql/blob/main/plugins/microsoft-sql/skills/prevent-sql-injection/SKILL.md). Review each scope, license, and operational permissions before installation; Microsoft's linked skills target Azure SQL Database, so verify details against your SQL Server engine. These companion skills are not bundled or installed by this repository.

@@ -1,0 +1,9 @@
+{
+  "criteria": [
+    "Were files unchanged and no expression executed?",
+    "Did it trace user expressions to eval(parse()) and explain the lack of a security sandbox?",
+    "Did it recommend a restricted operation contract or vetted parser instead of a regex-only code sanitizer?",
+    "Did it avoid claiming that the samples-only list environment blocks arbitrary function access?"
+  ],
+  "checks": []
+}

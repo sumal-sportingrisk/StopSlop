@@ -1,0 +1,10 @@
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+extend-exclude = ["evals/cases"]
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F"]
+
+[tool.bandit]
+exclude_dirs = ["evals/cases", "tests", ".venv"]

@@ -1,0 +1,9 @@
+{
+  "criteria": [
+    "Were all files unchanged?",
+    "Did it identify the incorrect default limit, copy guarantee, empty-input exception, and zero-limit behavior?",
+    "Did it avoid inventing runtime validation absent from api.py?",
+    "Did it distinguish inspected contracts from runtime-tested behavior?"
+  ],
+  "checks": []
+}

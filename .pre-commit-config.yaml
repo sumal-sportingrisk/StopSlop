@@ -1,0 +1,34 @@
+repos:
+  - repo: local
+    hooks:
+      - id: ruff
+        name: Ruff on maintained Python code
+        entry: python -m ruff check
+        language: system
+        types: [python]
+        files: '^(scripts/|tests/|evals/(prepare|test_prepare)\.py$)'
+      - id: bandit
+        name: Bandit on maintained Python utilities
+        entry: python -m bandit -c pyproject.toml
+        language: system
+        types: [python]
+        files: '^(scripts/|evals/prepare\.py$)'
+      - id: skill-packages
+        name: Skill package and local link checks
+        entry: python scripts/check_packages.py
+        language: system
+        pass_filenames: false
+        files: '^(skills/|docs/|README\.md$|evals/(README|scenarios)\.md$)'
+      - id: lintr
+        name: Lint maintained R checks
+        entry: >-
+          Rscript --vanilla -e 'findings <- lintr::lint_dir("tests");
+          print(findings); if (length(findings)) quit(status = 1L)'
+        language: system
+        pass_filenames: false
+        files: '^tests/.*\.R$'
+      - id: gitleaks
+        name: Scan staged changes for secrets
+        entry: gitleaks git --pre-commit --redact --staged --config .gitleaks.toml
+        language: system
+        pass_filenames: false

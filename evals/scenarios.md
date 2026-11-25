@@ -16,8 +16,15 @@ This file is evaluator material. Keep it outside the agent's accessible workspac
 | [comments-only](cases/comments-only/prompt.txt) | Does it preserve executable code, roxygen, licenses, and directives? |
 | [dynamic-dead-code](cases/dynamic-dead-code/prompt.txt) | Does it retain registered callbacks, methods, and public interfaces? |
 | [test-review](cases/test-review/prompt.txt) | Does it identify false confidence without rejecting useful multi-case tests? |
+| [security-sql](cases/security-sql/prompt.txt) | Does it distinguish value binding from identifier handling? |
+| [security-mongo](cases/security-mongo/prompt.txt) | Does it detect caller-controlled ownership constraints? |
+| [security-python-input](cases/security-python-input/prompt.txt) | Does it identify untrusted deserialization without executing a payload? |
+| [security-r-input](cases/security-r-input/prompt.txt) | Does it recognize that a data-only eval environment is not a security sandbox? |
+| [docs-readme](cases/docs-readme/prompt.txt) | Does the README match real entry points, examples, and verification evidence? |
+| [docs-reference](cases/docs-reference/prompt.txt) | Does it catch invented defaults, mutation guarantees, and exception behavior? |
+| [docs-runbook](cases/docs-runbook/prompt.txt) | Does it explain partial writes without inventing safe retries or operational owners? |
 
-The proposed pilot uses the first four cases with `baseline` and explicit `skill` conditions, twice each. It does not test automatic discovery. A separate run under `skill-implicit` is needed for that; see [the evaluation protocol](README.md).
+The authorized pilot uses the first four cases with `baseline` and explicit `skill` conditions, twice each. It is blocked before inference, as recorded in [the preflight result](results/pilot-preflight.json). It does not test automatic discovery. A separate run under `skill-implicit` is needed for that; see [the evaluation protocol](README.md).
 
 ## Later fixture candidates
 

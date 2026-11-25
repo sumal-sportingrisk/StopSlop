@@ -1,0 +1,4 @@
+interface:
+  display_name: "SlopStop Documentation"
+  short_description: "Write useful docs that match code and checked examples"
+  default_prompt: "Use $slopstop-docs to improve the selected documentation, verify its claims against the code, and report which examples were checked."

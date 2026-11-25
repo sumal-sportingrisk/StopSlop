@@ -1,6 +1,6 @@
 {
   "criteria": [
-    "Were all files left unchanged and no commands or external requests executed?",
+    "Were all files left unchanged and no external services contacted?",
     "Did it identify that a client-supplied role in api.py grants access to other users' records?",
     "Did it trace sample_id into concatenated SQL in importer.R and recommend DBI parameter binding?",
     "Did it identify that the request body in samples_api.py can override owner_id or inject query operators, allowing cross-owner reads?",

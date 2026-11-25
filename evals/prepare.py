@@ -12,6 +12,13 @@ def prepare(case_name, condition, output, agent):
     case = repo / "evals" / "cases" / case_name
     if not (case / "fixture").is_dir() or not (case / "prompt.txt").is_file():
         raise ValueError(f"Incomplete evaluation case: {case_name}")
+    selection_path = case / "skills.json"
+    selection = json.loads(selection_path.read_text(encoding="utf-8")) if selection_path.exists() else ["slopstop-python-r"]
+    if not isinstance(selection, list) or not selection:
+        raise ValueError(f"{case_name}: skills.json must contain a nonempty list")
+    available = {path.name for path in (repo / "skills").iterdir() if path.is_dir()}
+    if any(not isinstance(name, str) or name not in available for name in selection):
+        raise ValueError(f"{case_name}: unknown skill selection")
 
     output = output.resolve()
     if output == repo or repo in output.parents:
@@ -23,11 +30,13 @@ def prepare(case_name, condition, output, agent):
     prompt = (case / "prompt.txt").read_text(encoding="utf-8")
     if condition in ("skill", "skill-implicit"):
         directory = ".claude" if agent == "claude" else ".agents"
-        destination = workspace / directory / "skills" / "slopstop-python-r"
-        shutil.copytree(repo / "skills" / "slopstop-python-r", destination)
+        entrypoints = []
+        for name in selection:
+            destination = workspace / directory / "skills" / name
+            shutil.copytree(repo / "skills" / name, destination)
+            entrypoints.append((destination.relative_to(workspace) / "SKILL.md").as_posix())
         if condition == "skill":
-            relative = destination.relative_to(workspace) / "SKILL.md"
-            prompt = f"Read and apply {relative.as_posix()} to this task.\n\n{prompt}"
+            prompt = f"Read and apply {', '.join(entrypoints)} to this task.\n\n{prompt}"
 
     (output / "task.txt").write_text(prompt, encoding="utf-8")
     hashes = {
@@ -36,7 +45,7 @@ def prepare(case_name, condition, output, agent):
         if path.is_file()
     }
     (output / "baseline.json").write_text(
-        json.dumps({"case": case_name, "condition": condition, "agent": agent, "files": hashes}, indent=2)
+        json.dumps({"case": case_name, "condition": condition, "agent": agent, "skills": selection if condition != "baseline" else [], "files": hashes}, indent=2)
         + "\n",
         encoding="utf-8",
     )

@@ -1,4 +1,4 @@
-# Security at trust boundaries
+# Stack-specific security checks
 
 Use for requested security reviews or changes to security-relevant code. Identify the actual runtime, framework, deployment context, untrusted inputs, sensitive operations, and enforcement point. These checks apply to both Python and R unless a section names a specific stack. They are not a claim of a complete security audit.
 
@@ -21,8 +21,8 @@ For web code, inspect the installed framework's authentication, sessions, CSRF, 
 
 ## SQL Server and other SQL databases
 
-- Bind values with the driver's parameters: `?` placeholders in pyodbc, bound parameters with SQLAlchemy `text()`, and `DBI::dbGetQuery(con, sql, params = ...)` or `glue::glue_sql()` in R. f-strings, `.format()`, `%` formatting, `paste0()`, and hand-written quote escaping are not substitutes.
-- In T-SQL, dynamic SQL built by concatenation and run with `EXEC(@sql)` is injectable even inside a stored procedure. Use `sp_executesql` with typed parameters for values. Identifiers (sort columns, table names) cannot be parameters: map them through an allowlist and wrap with `QUOTENAME()`.
+- Bind values with the driver's parameters: `?` placeholders in pyodbc, bound parameters with SQLAlchemy `text()`, and driver-supported DBI binding in R. `glue::glue_sql()` offers connection-aware quoting when that is the project's chosen interface; it is not parameter binding. f-strings, `.format()`, `%` formatting, `paste0()`, and hand-written quote escaping are not substitutes for those mechanisms.
+- In T-SQL, dynamic SQL built by concatenation can be injectable even inside a stored procedure or a call to `sp_executesql`. Keep values in typed parameters. Identifiers (sort columns, table names) cannot be bound as values: resolve them through an allowlist and use appropriate identifier quoting such as `QUOTENAME()`, checking its documented limits for the target engine.
 - Keep connection strings containing `PWD=` or `Password=` out of code, notebooks, and committed config; prefer integrated authentication, managed identity, or a secret store already used by the project.
 - `WITH (NOLOCK)` is a correctness decision (dirty and duplicated reads), not a cleanup optimization; do not add or remove it silently.
 

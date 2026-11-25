@@ -49,12 +49,16 @@ class PreparationTests(unittest.TestCase):
                                 self.assertEqual((output / "task.txt").read_text(), (case / "prompt.txt").read_text())
                             else:
                                 folder = ".claude" if agent == "claude" else ".agents"
-                                prefix = f"{folder}/skills/slopstop-python-r/"
+                                selection_path = case / "skills.json"
+                                selection = json.loads(selection_path.read_text()) if selection_path.exists() else ["slopstop-python-r"]
+                                prefixes = [f"{folder}/skills/{name}/" for name in selection]
                                 self.assertTrue(extras)
-                                self.assertTrue(all(p.startswith(prefix) for p in extras))
+                                self.assertTrue(all(any(p.startswith(prefix) for prefix in prefixes) for p in extras))
                                 task = (output / "task.txt").read_text()
                                 if condition == "skill":
-                                    self.assertTrue(task.startswith(f"Read and apply {prefix}SKILL.md"))
+                                    self.assertTrue(task.startswith("Read and apply "))
+                                    for prefix in prefixes:
+                                        self.assertIn(f"{prefix}SKILL.md", task.split("\n", 1)[0])
                                 else:
                                     self.assertEqual(task, (case / "prompt.txt").read_text())
 
@@ -99,7 +103,7 @@ class PreparationTests(unittest.TestCase):
                 self.assertTrue(grading["criteria"], case.name)
                 for check in grading["checks"]:
                     with self.subTest(case=case.name, command=check["command"]):
-                        result = subprocess.run(
+                        result = subprocess.run(  # Trusted fixture commands; never executed from an agent's supplied text.
                             check["command"], cwd=output / "workspace",
                             capture_output=True, text=True, timeout=20,
                         )

@@ -1,0 +1,28 @@
+{
+  "status": "blocked-before-inference",
+  "source_commit": "1467718",
+  "planned_runs": 16,
+  "completed_behavioral_runs": 0,
+  "planned_cases": ["scoped-fix", "test-integrity", "keep-simple", "security-review"],
+  "conditions": ["baseline", "skill"],
+  "repeats": 2,
+  "preflight": {
+    "sandbox": {"exit_code": 71, "error": "sandbox-exec: sandbox_apply: Operation not permitted"},
+    "claude": {
+      "auth_status": {"loggedIn": false, "authMethod": "none", "apiProvider": "firstParty"},
+      "exit_code": 1,
+      "terminal_reason": "api_error",
+      "result": "Not logged in · Please run /login",
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "cost_usd": 0,
+      "mode": "restricted; no shell or network tools; no session persistence; empty MCP configuration"
+    }
+  },
+  "limits": [
+    "No improvement or regression in agent behavior was measured.",
+    "The environment did not permit the OS sandbox needed to isolate grading keys.",
+    "The restricted-mode CLI probe did not reach a model; tool isolation was not behaviorally verified.",
+    "Automatic skill loading remains unverified."
+  ]
+}
