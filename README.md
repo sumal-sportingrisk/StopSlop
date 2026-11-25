@@ -64,7 +64,8 @@ Current validation status:
 | Secret-scan control protocol | Three unit tests pass with simulated scanner responses; this does not verify real Gitleaks detection |
 | Evaluation preparer and fixture starting states | Five harness tests pass across 15 fixture cases and three loading conditions |
 | R reference examples | Executed locally with missingness and dimension checks |
-| Ruff, Bandit, lintr, and Gitleaks | Configured, not executed locally; tools are unavailable and package installation failed |
+| Ruff and Bandit | Pass locally with `requirements-dev.txt` installed |
+| lintr and Gitleaks | Configured, not executed locally; CI has not run yet |
 | Paired agent evaluation | 16-run pilot completed with in-session subagents, not OS-sandboxed: no correctness difference between conditions (ceiling effect); skill runs redacted secrets and reported check status more reliably. A sandboxed CLI run is still blocked |
 | Automatic skill loading | Not verified; `skill-implicit` is implemented in the preparer but has not been run in an agent |
 
