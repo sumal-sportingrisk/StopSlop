@@ -1,6 +1,6 @@
 {
   "status": "blocked-before-inference",
-  "source_commit": "1467718",
+  "source_commit": "d3ae8ba",
   "planned_runs": 16,
   "completed_behavioral_runs": 0,
   "planned_cases": ["scoped-fix", "test-integrity", "keep-simple", "security-review"],
