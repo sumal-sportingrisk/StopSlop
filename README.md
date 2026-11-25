@@ -1,5 +1,7 @@
 # SlopStop
 
+[![Checks](https://github.com/sumal-sportingrisk/StopSlop/actions/workflows/checks.yml/badge.svg)](https://github.com/sumal-sportingrisk/StopSlop/actions/workflows/checks.yml)
+
 Three loadable skills for code quality, security, and documentation across Python, R, MongoDB, SQL Server, and AWS. They guide agent decisions while preserving project conventions and public behavior. Mechanical checks are configured separately in CI and optional local hooks.
 
 | Skill | Use it for |
@@ -46,7 +48,7 @@ You can also ask an agent to read a skill's `SKILL.md` directly. Discovery depen
 
 ## Scope and structure
 
-The Python/R skill deliberately covers writing as well as cleanup and review; it loads language-specific references and conditionally loads testing or dead-code guidance. Dedicated security and documentation tasks have separate entry points. Each skill is independently installable. [AGENTS.md](AGENTS.md) and [CLAUDE.md](CLAUDE.md) route repository work to the relevant package; installing the packages elsewhere does not install those routing files.
+The Python/R skill deliberately covers writing as well as cleanup and review; it loads language-specific references and conditionally loads testing or dead-code guidance. Dedicated security and documentation tasks have separate entry points. The Claude Code plugin installs all three; with other agents, each skill folder can be installed on its own. [AGENTS.md](AGENTS.md) and [CLAUDE.md](CLAUDE.md) route repository work to the relevant package; installing the packages elsewhere does not install those routing files.
 
 - Cleanup preserves behavior within the requested scope; a focused fix leaves unrelated code alone.
 - Reviews are read-only unless edits were requested. Comment-only work preserves executable behavior and directives.
@@ -65,11 +67,12 @@ Current validation status:
 | Area | Status |
 | --- | --- |
 | Three skill packages and local links | Checked locally; four package-check tests pass |
-| Secret-scan control protocol | Three unit tests pass with simulated scanner responses; this does not verify real Gitleaks detection |
+| Secret-scan control protocol | Unit tests pass with simulated scanner responses; the real Gitleaks 8.30.1 control passes locally and in CI |
 | Evaluation preparer and fixture starting states | Five harness tests pass across 15 fixture cases and three loading conditions |
 | R reference examples | Executed locally with missingness and dimension checks |
 | Ruff and Bandit | Pass locally with `requirements-dev.txt` installed |
-| lintr and Gitleaks | Configured, not executed locally; CI has not run yet |
+| CI (all checks, including lintr and Gitleaks) | Passing on `main` |
+| Claude Code plugin | `claude plugin validate .` passes; an end-to-end install has not been confirmed |
 | Paired agent evaluation | 16-run pilot completed with in-session subagents, not OS-sandboxed: no correctness difference between conditions (ceiling effect); skill runs redacted secrets and reported check status more reliably. A sandboxed CLI run is still blocked |
 | Automatic skill loading | Not verified; `skill-implicit` is implemented in the preparer but has not been run in an agent |
 
@@ -83,7 +86,7 @@ Python 3 and Rscript are required for those checks. Documentation and security f
 
 ## Checks and enforcement
 
-[GitHub Actions](.github/workflows/checks.yml) is configured to run package/link checks, unit tests, fixture starting-state checks, R examples, Ruff, Bandit, lintr, and Gitleaks history/current-file scans. It uses read-only repository permissions and pinned action commits; the Gitleaks download is pinned and checksum-verified. The workflow has not been run remotely. Push the changes and configure required status checks in repository settings to make passing CI a merge requirement.
+[GitHub Actions](.github/workflows/checks.yml) is configured to run package/link checks, unit tests, fixture starting-state checks, R examples, Ruff, Bandit, lintr, and Gitleaks history/current-file scans. It uses read-only repository permissions and pinned action commits; the Gitleaks download is pinned and checksum-verified. It runs on every push and pull request. To make passing CI a merge requirement, add the `quality` and `secrets` jobs as required status checks in the repository's branch protection settings.
 
 Install development tools in your Python environment, then run checks from the repository root:
 
@@ -97,7 +100,7 @@ python3 -m ruff check scripts evals/prepare.py evals/test_prepare.py tests
 python3 -m bandit -c pyproject.toml -r scripts evals/prepare.py
 ```
 
-CI uses Python 3.12 and R 4.5.2. It also checks that the documented credential placeholders are allowed while a non-exempt synthetic token in the same fixture is detected. That real-scanner control has not been run locally. For the R linter, install lintr in your development R environment and run:
+CI uses Python 3.12 and R 4.5.2. It also checks that the documented credential placeholders are allowed while a non-exempt synthetic token in the same fixture is detected. For the R linter, install lintr in your development R environment and run:
 
 ```sh
 Rscript --vanilla -e 'install.packages("lintr", repos = "https://cloud.r-project.org")'
