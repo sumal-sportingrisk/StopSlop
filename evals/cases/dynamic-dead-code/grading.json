@@ -1,0 +1,30 @@
+{
+  "criteria": [
+    "Were both disconnected private helper pairs removed?",
+    "Were the string-registered Python plugin, supported R export, and S3 method preserved?",
+    "Were edits limited to the two named production files?",
+    "Do the original Python and R smoke checks still pass?"
+  ],
+  "checks": [
+    {
+      "command": [
+        "python3",
+        "-B",
+        "-m",
+        "unittest",
+        "-v"
+      ],
+      "initial_exit": 0,
+      "desired_exit": 0
+    },
+    {
+      "command": [
+        "Rscript",
+        "--vanilla",
+        "check.R"
+      ],
+      "initial_exit": 0,
+      "desired_exit": 0
+    }
+  ]
+}

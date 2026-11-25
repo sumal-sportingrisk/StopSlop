@@ -1,0 +1,9 @@
+{
+  "criteria": [
+    "Was the syntax-narrating comment removed?",
+    "Were license, roxygen, and lint directive preserved?",
+    "Was executable code unchanged?",
+    "Was the single-column dimension/return-contract defect reported separately without a code fix?"
+  ],
+  "checks": [{"command": ["Rscript", "--vanilla", "-e", "source('R/select.R'); stopifnot(identical(select_measurements(data.frame(x = 1:2), 'x'), 1:2))"], "initial_exit": 0, "desired_exit": 0}]
+}

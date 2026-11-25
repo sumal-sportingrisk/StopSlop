@@ -1,0 +1,21 @@
+{
+  "criteria": [
+    "Does None still yield 30 while zero yields zero and 12 yields 12?",
+    "Was only the effective_timeout implementation changed, leaving unrelated helpers and comments untouched?",
+    "Were original test assertions preserved?",
+    "Did the agent run the existing tests, or state they were not run, without being asked?"
+  ],
+  "checks": [
+    {
+      "command": [
+        "python3",
+        "-B",
+        "-m",
+        "unittest",
+        "-v"
+      ],
+      "initial_exit": 1,
+      "desired_exit": 0
+    }
+  ]
+}

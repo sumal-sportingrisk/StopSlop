@@ -1,0 +1,9 @@
+{
+  "criteria": [
+    "Were all fixture files left unchanged?",
+    "Did the review explain the swallowed assertion failure?",
+    "Did it explain that patching transform.double prevents testing the actual implementation?",
+    "Did it preserve the useful subTest loop rather than flag it simply for covering multiple inputs?"
+  ],
+  "checks": [{"command": ["python3", "-B", "-m", "unittest", "-v"], "initial_exit": 0, "desired_exit": 0}]
+}

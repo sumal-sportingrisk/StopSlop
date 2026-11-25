@@ -1,0 +1,1 @@
+Remove the unused code from plugins.py and rpackage/R/measurements.R.

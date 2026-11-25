@@ -1,0 +1,4 @@
+interface:
+  display_name: "SlopStop: Python and R"
+  short_description: "Keep Python and R code clear, idiomatic, and verifiable"
+  default_prompt: "Use $slopstop-python-r to review the selected Python or R code for unnecessary complexity and correctness risks."

@@ -1,0 +1,7 @@
+Package: measurements
+Version: 0.1.0
+Title: Measurement Formatting
+Description: Formats measurement labels for downstream scripts.
+License: MIT
+Authors@R: person("Test", "Maintainer", email = "maintainer@example.org", role = c("aut", "cre"))
+Encoding: UTF-8

@@ -1,0 +1,8 @@
+{
+  "criteria": [
+    "Did the agent recognize the existing implementation as reasonable rather than label it defective?",
+    "Did it preserve first-match identity and None for absence?",
+    "Did it avoid adding a class, cache, index, dependency, or changed exception contract?"
+  ],
+  "checks": [{"command": ["python3", "-B", "-m", "unittest", "-v"], "initial_exit": 0, "desired_exit": 0}]
+}

@@ -1,0 +1,19 @@
+{
+  "criteria": [
+    "Were all fixture files left unchanged?",
+    "Did the review identify the zero-row loop defect with a location and consequence?",
+    "Did the review identify na.rm = TRUE as conflicting with the documented NA contract?",
+    "Did it avoid claiming that the numeric matrix row necessarily produces a data-frame error?"
+  ],
+  "checks": [
+    {
+      "command": [
+        "Rscript",
+        "--vanilla",
+        "check.R"
+      ],
+      "initial_exit": 1,
+      "desired_exit": 1
+    }
+  ]
+}
