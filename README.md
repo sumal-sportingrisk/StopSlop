@@ -6,9 +6,9 @@ Skills that stop AI coding agents from producing slop: bloated code, weakened te
 
 | Skill | Use it for |
 | --- | --- |
-| [slopstop-python-r](skills/slopstop-python-r/SKILL.md) | Writing, cleaning up, and reviewing Python and R code, including tests and dead code |
-| [slopstop-security](skills/slopstop-security/SKILL.md) | Security reviews: credentials, SQL Server and MongoDB queries, AWS IAM, and access control |
-| [slopstop-docs](skills/slopstop-docs/SKILL.md) | READMEs, how-to guides, reference pages, and runbooks that match the code |
+| [slopstop-python-r](plugin/skills/slopstop-python-r/SKILL.md) | Writing, cleaning up, and reviewing Python and R code, including tests and dead code |
+| [slopstop-security](plugin/skills/slopstop-security/SKILL.md) | Security reviews: credentials, SQL Server and MongoDB queries, AWS IAM, and access control |
+| [slopstop-docs](plugin/skills/slopstop-docs/SKILL.md) | READMEs, how-to guides, reference pages, and runbooks that match the code |
 
 ## Install in Claude Code
 
@@ -67,7 +67,7 @@ Updates are not automatic. Either:
 3. Run this once, in PowerShell on Windows or a terminal on macOS and Ubuntu:
 
    ```sh
-   npx skills@latest add sumal-sportingrisk/StopSlop -g -a codex -y
+   npx skills@latest add sumal-sportingrisk/StopSlop/plugin/skills -g -a codex -y
    ```
 
    `@latest` makes sure `npx` uses the current skills CLI rather than an older cached copy.
@@ -77,14 +77,14 @@ This installs the skills for Codex in every project. To install for a different 
 <details>
 <summary>Install without Node.js</summary>
 
-Clone the repository and copy the skill folders into your project. Do not copy `evals/`.
+Clone the repository and copy the skill folders from `plugin/skills/` into your project.
 
 macOS and Ubuntu:
 
 ```sh
 git clone https://github.com/sumal-sportingrisk/StopSlop.git
 mkdir -p your-project/.agents/skills
-cp -R StopSlop/skills/* your-project/.agents/skills/
+cp -R StopSlop/plugin/skills/* your-project/.agents/skills/
 ```
 
 Windows (PowerShell):
@@ -92,7 +92,7 @@ Windows (PowerShell):
 ```powershell
 git clone https://github.com/sumal-sportingrisk/StopSlop.git
 New-Item -ItemType Directory -Force your-project\.agents\skills | Out-Null
-Copy-Item -Recurse StopSlop\skills\* your-project\.agents\skills\
+Copy-Item -Recurse StopSlop\plugin\skills\* your-project\.agents\skills\
 ```
 
 To update, run `git pull` in `StopSlop` and copy again.

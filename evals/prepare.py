@@ -16,7 +16,7 @@ def prepare(case_name, condition, output, agent):
     selection = json.loads(selection_path.read_text(encoding="utf-8")) if selection_path.exists() else ["slopstop-python-r"]
     if not isinstance(selection, list) or not selection:
         raise ValueError(f"{case_name}: skills.json must contain a nonempty list")
-    available = {path.name for path in (repo / "skills").iterdir() if path.is_dir()}
+    available = {path.name for path in (repo / "plugin" / "skills").iterdir() if path.is_dir()}
     if any(not isinstance(name, str) or name not in available for name in selection):
         raise ValueError(f"{case_name}: unknown skill selection")
 
@@ -33,7 +33,7 @@ def prepare(case_name, condition, output, agent):
         entrypoints = []
         for name in selection:
             destination = workspace / directory / "skills" / name
-            shutil.copytree(repo / "skills" / name, destination)
+            shutil.copytree(repo / "plugin" / "skills" / name, destination)
             entrypoints.append((destination.relative_to(workspace) / "SKILL.md").as_posix())
         if condition == "skill":
             prompt = f"Read and apply {', '.join(entrypoints)} to this task.\n\n{prompt}"

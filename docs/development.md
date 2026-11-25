@@ -27,8 +27,8 @@ Intentional evaluation fixtures are excluded from style/security linting so thei
 
 ## Repository layout
 
-- `skills/`: the three installable skills. Each has a `SKILL.md` and optional `references/`.
-- `.claude-plugin/`: Claude Code plugin and marketplace manifests. Validate with `claude plugin validate .`.
+- `plugin/`: everything the Claude Code plugin installs, and nothing else. `plugin/skills/` holds the three skills, each with a `SKILL.md` and optional `references/`; `plugin/.claude-plugin/plugin.json` is the plugin manifest.
+- `.claude-plugin/marketplace.json`: the marketplace manifest, pointing at `./plugin`. Validate with `claude plugin validate .` and `claude plugin validate plugin`.
 - `evals/`: behavioral evaluation cases, grading keys, and results. Never install this with the skills. See [the evaluation guide](../evals/README.md).
 - `scripts/` and `tests/`: package, link, secret-scan, and R example checks.
 - [AGENTS.md](../AGENTS.md) and [CLAUDE.md](../CLAUDE.md): instructions for agents working in this repository.
