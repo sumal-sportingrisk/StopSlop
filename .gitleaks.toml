@@ -1,14 +1,8 @@
 title = "SlopStop secret scanning"
 
+# The default rules already ignore AWS's documented example keys
+# (AKIAIOSFODNN7EXAMPLE), which the security-review fixture uses.
+# Do not add path-based allowlists: gitleaks skips allowlisted paths
+# entirely, so a real secret added to that file would go undetected.
 [extend]
 useDefault = true
-
-[[allowlists]]
-description = "AWS documentation placeholders in the intentional security fixture only"
-condition = "AND"
-paths = ['''(?:^|/)evals/cases/security-review/fixture/upload\.py$''']
-regexTarget = "secret"
-regexes = [
-  '''^AKIAIOSFODNN7EXAMPLE$''',
-  '''^wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY$''',
-]

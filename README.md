@@ -102,7 +102,7 @@ Rscript --vanilla -e 'findings <- lintr::lint_dir("tests"); print(findings); if 
 
 [The optional pre-commit configuration](.pre-commit-config.yaml) uses system-installed tools. Install the Python development dependencies, the pre-commit framework, lintr, and Gitleaks 8.30.1 before enabling it with `pre-commit install`. Hook installation changes the current repository's Git configuration and has not been performed here. Local hooks can be bypassed; CI is the shared enforcement point once its checks are required.
 
-Intentional evaluation fixtures are excluded from style/security linting so their seeded defects remain available to evaluate agents. Secret scanning still covers them. [The Gitleaks exception](.gitleaks.toml) requires both the exact fixture path and one of AWS's documented placeholder values; it does not exclude the fixture file or evaluation directory wholesale. There are no Claude Code hooks or live-account scanners configured.
+Intentional evaluation fixtures are excluded from style/security linting so their seeded defects remain available to evaluate agents. Secret scanning still covers them. [The Gitleaks config](.gitleaks.toml) uses only the default rules, which already ignore AWS's documented example keys used by the security fixture. It has no path allowlist: gitleaks skips allowlisted paths entirely, which an earlier version of this config did, so the fixture file was never scanned. CI's control check confirms the fixture is scanned and that a non-placeholder token in it is detected. There are no Claude Code hooks or live-account scanners configured.
 
 ## References consulted
 

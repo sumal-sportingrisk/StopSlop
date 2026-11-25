@@ -69,5 +69,5 @@ jobs:
         run: '"$RUNNER_TEMP/gitleaks" git . --config .gitleaks.toml --redact --no-banner'
       - name: Scan current files for secrets
         run: '"$RUNNER_TEMP/gitleaks" dir . --config .gitleaks.toml --redact --no-banner'
-      - name: Check the fixture exception still detects other secrets
+      - name: Check the fixture is scanned and other secrets in it are detected
         run: python3 scripts/check_secret_controls.py "$RUNNER_TEMP/gitleaks"
