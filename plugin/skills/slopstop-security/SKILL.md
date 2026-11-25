@@ -30,14 +30,20 @@ A pattern match alone is not a finding. For example, a wildcard IAM resource can
 
 Each actionable finding needs a file and line, affected operation, concrete consequence, exploit preconditions, and a minimal correction. Distinguish confirmed defects from unresolved risks. Prioritize unauthorized access, code execution, exposed credentials, and data integrity consequences over stylistic preferences. Do not invent scores, fix quotas, or a secure verdict from a checklist.
 
-Rank severity by exploitability and impact, not by finding type:
+Rate each finding on three factors together, not by finding type:
 
-- **Critical:** any caller who can reach the code can exploit it without special preconditions, causing unauthorized data access, code execution, or account-wide compromise.
-- **High:** serious impact that needs a precondition, such as a leaked credential, an insider, or a specific deployment setting; or a live-looking credential exposed in source.
-- **Medium:** limited impact or a defense-in-depth gap, such as an unbounded query or an overly broad permission that is not reachable without another flaw.
+- **Impact:** what an attacker gains, such as reading or changing data, running code, or taking over an account, and how sensitive the affected data or system is.
+- **Scope:** one record or user, every user or tenant, or the wider account or infrastructure.
+- **Exploitability:** who can trigger it (anyone, any signed-in user, an insider, or someone holding a leaked credential) and what else must already be true.
+
+Then assign a level:
+
+- **Critical:** high impact on sensitive data or systems, broad scope, and exploitable by any caller who can reach the code.
+- **High:** high impact that needs a meaningful precondition, or that is limited in scope or data sensitivity; also credentials that look live, exposed in source.
+- **Medium:** limited impact, or a gap that is exploitable only together with another flaw.
 - **Low:** hardening with little direct exposure.
 
-Use distinct levels when the findings differ; do not rate everything the same to avoid a judgment.
+When a factor is unknown, such as data sensitivity or deployment exposure, say so and rate on what the code shows. Give findings the same level when the factors are genuinely similar; do not invent differences to spread ratings.
 
 Never reproduce real credentials or sensitive records in a report. Redact values and cite their location. Recommend the project's rotation process for exposed credentials; do not rotate them without authorization.
 

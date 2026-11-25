@@ -18,7 +18,7 @@ repos:
         entry: python scripts/check_packages.py
         language: system
         pass_filenames: false
-        files: '^(skills/|docs/|README\.md$|evals/(README|scenarios)\.md$)'
+        files: '^(plugin/|\.claude-plugin/|docs/|README\.md$|evals/(README|scenarios)\.md$)'
       - id: lintr
         name: Lint maintained R checks
         entry: >-

@@ -1,4 +1,4 @@
-reference <- readLines("skills/slopstop-python-r/references/r.md", warn = FALSE)
+reference <- readLines("plugin/skills/slopstop-python-r/references/r.md", warn = FALSE)
 example_env <- new.env(parent = baseenv())
 
 for (start in which(reference == "```r")) {
