@@ -4,7 +4,7 @@ A loadable skill for writing, cleaning up, and reviewing Python and R code. It t
 
 ## Install and use
 
-Copy the entire [`skills/slopstop-python-r`](skills/slopstop-python-r/SKILL.md) folder, including its references, into your agent's project skill directory. From this repository's root, choose the matching destination below and replace `your-project` with the target project's relative directory:
+Copy the entire [`skills/slopstop-python-r`](skills/slopstop-python-r/SKILL.md) folder, including its references, into your agent's project skill directory. The examples below assume a sibling project named `your-project`; adjust the destination to your actual project. Run only the block for your agent, from this repository's root. Before copying, check that the destination does not already contain `slopstop-python-r`; review an existing copy rather than merging or overwriting it blindly.
 
 ```sh
 # Codex
@@ -16,7 +16,7 @@ mkdir -p ../your-project/.claude/skills
 cp -R skills/slopstop-python-r ../your-project/.claude/skills/
 ```
 
-Check for an existing skill of the same name before copying; review it rather than merging or overwriting it blindly. Other agents may use different directories. `agents/openai.yaml` supplies optional Codex UI metadata; the skill itself is plain Markdown with YAML frontmatter.
+These locations follow the [Codex skill documentation](https://learn.chatgpt.com/docs/build-skills) and [Claude Code skill documentation](https://code.claude.com/docs/en/skills). Other agents may use different directories. `agents/openai.yaml` supplies optional Codex UI metadata; the skill itself is plain Markdown with YAML frontmatter.
 
 In Codex, explicitly invoke `$slopstop-python-r`. In Claude Code, invoke `/slopstop-python-r` or ask to use the skill by name; see the [Claude Code skill documentation](https://code.claude.com/docs/en/skills). For example:
 
@@ -39,14 +39,29 @@ The broad trigger is intentional: the original scope includes writing Python and
 - Python checks cover defaults, closures, optional imports, mutation, dataframes, resources, and built artifacts.
 - R checks cover missingness, recycling, dimensions, attributes, conditions, state, and package compatibility.
 - Tests must verify behavior and must not be weakened merely to obtain a green result.
-- Security guidance follows trust boundaries, preserves existing protections, and covers the team stack: SQL Server, MongoDB, and AWS.
+- Security guidance follows trust boundaries, preserves existing protections, and includes checks for SQL Server, MongoDB, and AWS. It is not a complete security audit.
 - Verification distinguishes PASS, FAIL, NOT RUN, and N/A, with no arbitrary coverage or function-length quotas.
 
 ## Evaluation
 
-[The evaluation guide](evals/README.md) describes fixture preparation, isolated paired runs, and yes/no grading. Prompts, fixtures, grading keys, and supplemental scenarios live under `evals/`, outside the installable skill. The evaluator must keep grading material inaccessible to the agent; directory placement alone is not isolation.
+[The evaluation guide](evals/README.md) describes fixture preparation, isolated paired runs, and yes/no grading. Prompts, fixtures, grading keys, and a [case index and backlog](evals/scenarios.md) live under `evals/`, outside the installable skill. The evaluator must keep grading material inaccessible to the agent; directory placement alone is not isolation.
 
-Packaging checks and fixture smoke checks do not establish that the skill improves agent behavior. No paired agent results are claimed until those runs are performed and graded.
+Current validation status:
+
+| Area | Status |
+| --- | --- |
+| Skill metadata, local links, Python/R examples | Checked locally; these checks do not evaluate agent behavior |
+| Evaluation preparer and fixture starting states | Five harness tests pass, including copying, overwrite refusal, and initial test outcomes |
+| Paired agent evaluation | Not run; the proposed pilot is four cases × two conditions × two repeats = 16 runs |
+| Automatic skill loading | Not verified; `skill-implicit` is implemented in the preparer but has not been run in an agent |
+
+The 16-run pilot compares the baseline with explicit skill loading; it does not test automatic discovery. No improvement in agent behavior is claimed yet. To run the harness checks without launching agents:
+
+```sh
+python3 -B -m unittest discover -s evals -p 'test_prepare.py' -v
+```
+
+Python 3 and Rscript are required for those checks. The repository provides no automatic CI, pre-commit enforcement, or Claude Code hooks; loading the skill does not install those controls. A separate documentation skill is not included.
 
 ## References consulted
 

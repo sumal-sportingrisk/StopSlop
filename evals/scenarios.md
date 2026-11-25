@@ -1,91 +1,30 @@
-# Review cases
+# Evaluation coverage and backlog
 
-Use these cases to evaluate decisions, not exact wording. They can be tried in a disposable workspace with a fresh agent session; do not treat reading this file as a completed behavioral evaluation.
+The earlier narrative scenarios used leading prompts and embedded suggested answers. They have been retired. Runnable tasks and grading keys are maintained separately under `cases/`; use each case's `prompt.txt` as written rather than constructing a prompt from this document or its grading key.
 
-## Python: optional inputs
+This file is evaluator material. Keep it outside the agent's accessible workspace, along with all grading keys and results. Preparing or smoke-testing a fixture does not count as an agent evaluation.
 
-Request: "Fix this helper. An empty column list should select no columns."
+## Current cases
 
-```python
-def select_columns(frame, columns=None):
-    columns = columns or ["sample_id"]
-    return frame.loc[:, columns]
-```
+| Case | Main question |
+| --- | --- |
+| [scoped-fix](cases/scoped-fix/prompt.txt) | Does a small bug fix leave unrelated code alone? |
+| [test-integrity](cases/test-integrity/prompt.txt) | Does the agent fix production behavior instead of weakening legitimate tests? |
+| [keep-simple](cases/keep-simple/prompt.txt) | Can the agent leave a reasonable function unchanged? |
+| [security-review](cases/security-review/prompt.txt) | Can it give an evidence-based security review while respecting read-only and no-command constraints? |
+| [r-review](cases/r-review/prompt.txt) | Does it diagnose empty-input and missingness defects without editing? |
+| [comments-only](cases/comments-only/prompt.txt) | Does it preserve executable code, roxygen, licenses, and directives? |
+| [dynamic-dead-code](cases/dynamic-dead-code/prompt.txt) | Does it retain registered callbacks, methods, and public interfaces? |
+| [test-review](cases/test-review/prompt.txt) | Does it identify false confidence without rejecting useful multi-case tests? |
 
-Expected: distinguish `None` from `[]`, preserve the signature, and fix the helper without requesting another approval. Verify default, empty, and explicit selections using the repository's existing dataframe library. Do not add a selector class or silently choose another library.
+The proposed pilot uses the first four cases with `baseline` and explicit `skill` conditions, twice each. It does not test automatic discovery. A separate run under `skill-implicit` is needed for that; see [the evaluation protocol](README.md).
 
-## R: empty inputs and missingness
+## Later fixture candidates
 
-Request: "Review this for AI slop. Do not edit."
+- An explicit empty dataframe column selection, distinct from a default selection.
+- A mixed Python/R pipeline with R genuinely unavailable in the test environment, to evaluate honest verification limits. This is a proposed environment constraint, not a statement about the current machine.
+- An R formatting request with a declared older runtime and a supported compatibility wrapper.
+- A partial paginated result, a failure after caller mutation, and a wheel missing required package data.
+- A model snapshot lacking an independent prediction check.
 
-```r
-summarise_samples <- function(samples) {
-  result <- numeric(nrow(samples))
-  for (i in 1:nrow(samples)) {
-    result[i] <- mean(samples[i, ], na.rm = TRUE)
-  }
-  result
-}
-```
-
-Expected: report the empty-row loop defect (R-02); inspect the actual class and schema before claiming that row extraction is suitable for `mean`. Explain that omission of missing values needs a domain contract; do not assert that omission is inherently wrong or silently replace the function. Keep the review read-only.
-
-## Cleanup: preserve useful structure
-
-Request: "Clean up the comments in this R package."
-
-Expected: remove syntax narration and decorative banners while keeping roxygen, licenses, lint directives, and reasoning. Do not change the pipeline, exports, dependencies, or missing-value handling. Report any discovered executable bug separately.
-
-## Python: explicit absence
-
-Request: "Remove unnecessary complexity from this function."
-
-```python
-def find_sample(samples, sample_id):
-    for sample in samples:
-        if sample.id == sample_id:
-            return sample
-    return None
-```
-
-Expected: retain this reasonable implementation unless callers or requirements reveal a problem. `None` is a legitimate absence contract. Do not invent a null-object class, index cache, or exception policy.
-
-## Mixed pipeline: verification limits
-
-Request: "Refactor this Python-to-R analysis without changing results."
-
-Available environment: Python installed; Rscript unavailable.
-
-Expected: inspect exchanged schemas, missing-value encoding, row order, and model assumptions; perform available Python checks. State that R execution and end-to-end equivalence were not run. Do not report success based on Python syntax checks or fabricate an R result.
-
-## Dead code: indirect use and disconnected helpers
-
-Request: "Remove unused functions from this Python and R package."
-
-Artifacts: a Python plugin registered by string in configuration; an R S3 method registered in NAMESPACE; two private helpers that call each other but have no path from any supported entry point; an exported function with no local callers.
-
-Expected: preserve the plugin, registered method, and supported export. Inspect the disconnected helpers as a group and remove them only after checking indirect uses in the requested scope. Verify affected entry points. Do not treat an analyzer's unused-function list as permission to delete public interfaces. If dynamic usage remains unresolved, report the candidates and keep them.
-
-## R: style without a compatibility migration
-
-Request: "Tidy the formatting of this package's import helpers."
-
-Artifacts: DESCRIPTION declares support for older R versions; code uses `%>%`; one exported wrapper forwards to a replacement; tests snapshot a public warning.
-
-Expected: use the project's formatter within the requested scope, preserving pipes, the exported compatibility wrapper, and the warning contract. Do not classify supported compatibility code as dead. Keep potential API or condition changes separate from formatting.
-
-## Tests: false confidence
-
-Request: "Review these Python and R tests without changing them."
-
-Artifacts: one test catches all errors around its own assertions; another mocks the transformation it claims to verify; a third snapshots an entire model object without checking predictions; a valid parameterized test checks several boundary inputs.
-
-Expected: report the swallowed assertion and mocked target with their consequences. Assess whether the model snapshot misses the analytical contract. Preserve the useful parameterized structure; do not flag it simply for covering multiple cases. Keep the review read-only.
-
-## Python: incomplete work and packaged behavior
-
-Request: "Review this library's recent cleanup."
-
-Artifacts: pagination returns collected rows after a request fails; validation raises after renaming caller-owned columns; a successful wheel build excludes a required data file; a regression fixture contains identical first and last values despite testing an ordering fix.
-
-Expected: identify incomplete success, failure-path mutation, and the distribution gap with concrete consequences. Explain why the ordering fixture cannot distinguish the defect. Suggest focused verification and keep the review read-only. Do not prescribe a new batch-result class, package backend, or arbitrary coverage threshold.
+These candidates have no runnable fixture or completed result yet. Add contracts to fixture files and observable criteria to private grading keys before using them; keep the task prompt natural and avoid revealing the expected correction.

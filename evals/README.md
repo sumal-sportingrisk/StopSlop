@@ -4,7 +4,7 @@ This directory is for the evaluator, not the agent under evaluation. Do not inst
 
 ## Cases and preparation
 
-Eight cases under `cases/` each contain a user prompt, a concrete `fixture/`, and private `grading.json` criteria. Prompts are deliberately phrased the way a colleague would ask, without restating the behavior being graded; contracts the agent must respect live in the fixture's code and docs. Do not add hints to a prompt to make a case pass, because the baseline gets the same hints. [Supplemental scenarios](scenarios.md) retain the earlier narrative cases for later expansion; they are not completed runs.
+Eight cases under `cases/` each contain a user prompt, a concrete `fixture/`, and private `grading.json` criteria. Prompts are deliberately phrased the way a colleague would ask, without restating the behavior being graded; contracts the agent must respect live in the fixture's code and docs. Do not add hints to a prompt to make a case pass, because the baseline gets the same hints. [The case index and backlog](scenarios.md) lists current coverage and future fixture candidates; it contains no completed results.
 
 From this repository's root, prepare a fresh run outside the repository:
 
