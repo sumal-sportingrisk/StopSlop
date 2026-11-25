@@ -8,23 +8,27 @@ Three loadable skills for code quality, security, and documentation across Pytho
 | [slopstop-security](skills/slopstop-security/SKILL.md) | Trust boundaries, credentials, SQL/Mongo queries, IAM, and access-control reviews |
 | [slopstop-docs](skills/slopstop-docs/SKILL.md) | Accurate README files, how-to guides, reference pages, runbooks, and checked examples |
 
-## Install and use
+## Install
 
-Copy the desired skill folders, including their supporting files, into your agent's project skill directory. The examples below install all three into a sibling project named `your-project`; adjust the destination to your actual project. Run only the block for your agent, from this repository's root. Check existing skill folders before copying; review an existing copy rather than merging or overwriting it blindly. Do not copy `evals/` into the skill directory.
+**Claude Code** (2.1.275 or later), once per person:
 
-```sh
-# Codex
-mkdir -p ../your-project/.agents/skills
-cp -R skills/slopstop-python-r skills/slopstop-security skills/slopstop-docs ../your-project/.agents/skills/
-
-# Claude Code
-mkdir -p ../your-project/.claude/skills
-cp -R skills/slopstop-python-r skills/slopstop-security skills/slopstop-docs ../your-project/.claude/skills/
+```text
+/plugin install slopstop --marketplace sumal-sportingrisk/StopSlop
 ```
 
-These locations follow the [Codex skill documentation](https://learn.chatgpt.com/docs/build-skills) and [Claude Code skill documentation](https://code.claude.com/docs/en/skills). Other agents may use different directories. `agents/openai.yaml` supplies optional Codex UI metadata; the skill itself is plain Markdown with YAML frontmatter.
+On older versions, run `/plugin marketplace add sumal-sportingrisk/StopSlop`, then `/plugin install slopstop@stopslop`. The skills are then available in every project as `/slopstop:slopstop-python-r`, `/slopstop:slopstop-security`, and `/slopstop:slopstop-docs`, and Claude also loads them when a task matches their descriptions. Auto-update is off by default for third-party marketplaces: turn it on under **Marketplaces** in `/plugin`, or run `/plugin marketplace update stopslop` to pull changes.
 
-In Codex, explicitly invoke `$slopstop-python-r`, `$slopstop-security`, or `$slopstop-docs`. In Claude Code, use the corresponding slash command or ask to use the skill by name; see the [Claude Code skill documentation](https://code.claude.com/docs/en/skills). For example:
+**Codex and other agents:**
+
+```sh
+npx skills add sumal-sportingrisk/StopSlop
+```
+
+Or copy the folders under `skills/` into the agent's skill directory (`.agents/skills/` for Codex). Do not copy `evals/`. In Codex, invoke `$slopstop-python-r`, `$slopstop-security`, or `$slopstop-docs`; `agents/openai.yaml` supplies optional Codex UI metadata.
+
+## Use
+
+Ask for a skill by name, or let the agent pick it up from the task. For example:
 
 ```text
 Use slopstop-python-r to simplify the selected functions without changing behavior.
