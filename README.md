@@ -12,17 +12,44 @@ Three loadable skills for code quality, security, and documentation across Pytho
 
 ## Install
 
-**Claude Code** (2.1.275 or later), once per person:
+### Claude Code
 
-```text
-/plugin install slopstop --marketplace sumal-sportingrisk/StopSlop
-```
+Each person does this once. It works in every project afterwards, and the steps are the same on Windows, macOS, and Ubuntu.
 
-On older versions, run `/plugin marketplace add sumal-sportingrisk/StopSlop`, then `/plugin install slopstop@stopslop`. The skills are then available in every project as `/slopstop:slopstop-python-r`, `/slopstop:slopstop-security`, and `/slopstop:slopstop-docs`, and Claude also loads them when a task matches their descriptions. Auto-update is off by default for third-party marketplaces: turn it on under **Marketplaces** in `/plugin`, or run `/plugin marketplace update stopslop` to pull changes.
+1. Check your version by running `claude --version` in a terminal.
+2. Start Claude Code and type the command for your version:
 
-The plugin command is the same on Windows, macOS, and Ubuntu because it runs inside Claude Code.
+   **2.1.275 or later:**
 
-**Codex and other agents:** the [skills CLI](https://github.com/vercel-labs/skills) installs from this repository. It needs Node.js, which provides `npx`. Install a current LTS release if `node --version` fails:
+   ```text
+   /plugin install slopstop --marketplace sumal-sportingrisk/StopSlop
+   ```
+
+   **Older versions:** type these two commands, one after the other:
+
+   ```text
+   /plugin marketplace add sumal-sportingrisk/StopSlop
+   /plugin install slopstop@stopslop
+   ```
+
+3. Type `/plugin` and check that `slopstop` is listed as installed.
+
+**Using the skills.** Claude picks the right skill automatically when your request matches it, for example "review this SQL for security issues". You can also call one directly:
+
+| Command | Skill |
+| --- | --- |
+| `/slopstop:slopstop-python-r` | Python and R code quality |
+| `/slopstop:slopstop-security` | Security reviews |
+| `/slopstop:slopstop-docs` | Documentation |
+
+**Getting updates.** You do not get new versions automatically. Either:
+
+- type `/plugin marketplace update stopslop` whenever you want the latest version, or
+- turn on automatic updates once: type `/plugin`, open **Marketplaces**, select `stopslop`, and enable auto-update.
+
+### Codex and other agents
+
+The [skills CLI](https://github.com/vercel-labs/skills) installs from this repository. It needs Node.js, which provides `npx`. Install a current LTS release if `node --version` fails:
 
 | OS | Install Node.js |
 | --- | --- |
